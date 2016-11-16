@@ -603,7 +603,7 @@ double plane_intersection(double *Ro, double *Rd, double *P, double *N) {
 
   return -1;
 }
-
+//finds the closest object that a ray is shooting towards
 Closest* shoot(double *Ro, double *Rd, Object **objects){
 	Closest* best_values = malloc(sizeof(Closest));
 	best_values->closest_object = NULL;
@@ -629,7 +629,7 @@ Closest* shoot(double *Ro, double *Rd, Object **objects){
 	}
 	return best_values;
 }
-
+//calculates the diffuse of light on a surface
 double calculate_diffuse(double object_diff_color, double light_color, double *N, double *L){
 	double dot_result; 
 	dot_result = vector_dot_product(N, L);
@@ -640,7 +640,7 @@ double calculate_diffuse(double object_diff_color, double light_color, double *N
 		return 0;
 	}
 }
-
+//calulates the specular light value
 double calculate_specular(double *L, double *N, double *R, double *V, double object_spec_color, double light_color){
 	double V_dot_R;
 	double N_dot_L;
@@ -653,11 +653,11 @@ double calculate_specular(double *L, double *N, double *R, double *V, double obj
 		return 0;
 	}
 }
-
+//calculates the intensity of light
 double frad(Light * light, double t){
 	return (1/(light->radial_a2*t*t+light->radial_a1*t+light->radial_a0));
 }
-
+//calculates the intensity of a spotlight
 double fang(Light *light, double *L){
 	double light_length = vector_length(light->direction);
 	double theta = light->theta;
@@ -687,7 +687,7 @@ double fang(Light *light, double *L){
 	}
 	return 0;
 }
-
+//Takes the inputs and creates the scene
 void generate_scene(Camera *camera, Object **objects, Light **lights, Pixel *buffer, int width, int height){
   double camera_width = camera->width;
   double camera_height = camera->height;
@@ -721,7 +721,7 @@ void generate_scene(Camera *camera, Object **objects, Light **lights, Pixel *buf
     }
   } 
 }
-
+//colors the scene based of the reflection, refraction, and light on an object.
 Pixel* recursive_shade(Object **objects, Light **lights, double *Ro, double *Rd, Closest *current_object, int depth, double current_ior, int exiting_sphere){
 	Pixel* current_pixel = malloc(sizeof(Pixel));
 	Object* closest_object = current_object->closest_object;
@@ -900,10 +900,8 @@ Pixel* recursive_shade(Object **objects, Light **lights, double *Ro, double *Rd,
 	  L[1] = Rdn[1];
 	  L[2] = Rdn[2];
 	  vector_normalize(L);
-	  //Get R
 	  vector_reflection(N, L, R);
 	  vector_normalize(R);
-	  //Get V
 	  V[0] = -1*Rd[0];
 	  V[1] = -1*Rd[1];
 	  V[2] = -1*Rd[2];
@@ -947,7 +945,7 @@ Pixel* recursive_shade(Object **objects, Light **lights, double *Ro, double *Rd,
       current_pixel->b = (unsigned char)(255 * clamp(color[2]));
       return current_pixel;
 }
-
+//writes the image into P3 format
 void write_p3(Pixel *buffer, FILE *output_file, int width, int height, int max_color){
   fprintf(output_file, "P3\n%d %d\n%d\n", width, height, max_color);
   int current_width = 1;
@@ -962,7 +960,7 @@ void write_p3(Pixel *buffer, FILE *output_file, int width, int height, int max_c
     }
   }
 }
-
+//if the value is less than 0, return it to 0. if the value is greater than 1, return it to 1.
 double clamp(double value){
   if (value < 0){
     return 0;
