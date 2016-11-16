@@ -191,7 +191,7 @@ char* next_string(FILE *json) {
   buffer[i] = 0;
   return strdup(buffer);
 }
-
+//gets the next number
 double next_number(FILE *json) {
   double value;
   int count = fscanf(json, "%lf", &value);
@@ -202,7 +202,7 @@ double next_number(FILE *json) {
   }
   return value;
 }
-
+//gets the next vector
 double* next_vector(FILE *json) {
   double* v = malloc(3*sizeof(double));
   check_c(json, '[');
@@ -220,7 +220,7 @@ double* next_vector(FILE *json) {
   check_c(json, ']');
   return v;
 }
-
+//parses through the file and reads the scene and stores each of the elements.
 void read_scene(char *filename, Camera *camera, Object **objects, Light **lights) {
   int c;
   int current_light = -1;
@@ -527,28 +527,28 @@ void read_scene(char *filename, Camera *camera, Object **objects, Light **lights
     }
   }
 }
-
+//uses normalization to get a unit vector
 void vector_normalize(double *v) {
   double len = sqrt(pow(v[0], 2) + pow(v[1], 2) + pow(v[2], 2));
   v[0] /= len;
   v[1] /= len;
   v[2] /= len;
 }
-
+//finds the vector dot product
 double vector_dot_product(double *v1, double *v2){
 	return (v1[0]*v2[0]+v1[1]*v2[1]+v1[2]*v2[2]);
 }
-
+//finds the vector cross product
 void vector_cross_product(double *v1, double *v2, double *result){
 	result[0] = v1[1]*v2[2]-v2[1]*v1[2];
 	result[1] = v2[0]*v1[2]-v1[0]*v2[2];
 	result[2] = v1[0]*v2[1]-v2[0]*v1[1];
 }
-
+//finds the vector length
 double vector_length(double *vector){
 	return sqrt(pow(vector[0], 2)+pow(vector[1], 2)+pow(vector[2], 2));
 }
-
+//gets the reflection from the light vector
 void vector_reflection(double *N, double *L, double *result){
 	double dot_result;
 	double temp_vector[3]; 
@@ -576,7 +576,7 @@ void vector_scale(double *vector, double scalar, double *result){
 	result[1] = vector[1]*scalar;
 	result[2] = vector[2]*scalar;
 }
-
+//calculation to determine where a ray intersects with a sphere(equations used from class)
 double sphere_intersection(double *Ro, double *Rd, double *C, double r) {
   double a = (pow(Rd[0], 2) + pow(Rd[1], 2) + pow(Rd[2], 2));
   double b = (2 * (Ro[0] * Rd[0] - Rd[0] * C[0] + Ro[1] * Rd[1] - Rd[1] * C[1] + Ro[2] * Rd[2] - Rd[2] * C[2]));
@@ -595,7 +595,7 @@ double sphere_intersection(double *Ro, double *Rd, double *C, double r) {
 
   return -1;
 }
-
+//calculation to determine where a ray intersects with a plane(equations used from class)
 double plane_intersection(double *Ro, double *Rd, double *P, double *N) {
   vector_normalize(N);
   double t = (N[0]*P[0] + N[1]*P[1] + N[2]*P[2] - N[0]*Ro[0] - N[1]*Ro[1] - N[2]*Ro[2])/(N[0]*Rd[0] + N[1]*Rd[1] + N[2]*Rd[2]); 
